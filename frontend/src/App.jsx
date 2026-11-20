@@ -169,6 +169,7 @@ export default function App() {
       const defaultUser = usersData.find(u => (u.name || '').toLowerCase().includes('nrup'))
         || usersData.find(u => u.role === 'student') 
         || usersData[0];
+        console.log("Selected default user:", defaultUser);
       setCurrentUser(defaultUser);
     } catch (err) {
       console.error('Failed to load initial data:', err);
@@ -193,7 +194,7 @@ export default function App() {
   async function loadRecommendations() {
     if (!currentUser || currentUser.role !== 'student') return;
     try {
-      const data = await fetchRecommendedProjects(currentUser.id);
+      const data = await fetchRecommendedProjects(currentUser._id);
       setRecommendedProjects(data);
     } catch (err) {
       console.error(err);

@@ -60,6 +60,7 @@ export default function ChatDrawer({
   const fileInputRef = useRef(null);
 
   const isClient = currentUser?.role === 'client';
+  const currentUserId = currentUser?.id || currentUser?._id;
   const quickPrompts = isClient ? QUICK_PROMPTS_CLIENT : QUICK_PROMPTS_STUDENT;
 
   // Load conversation threads & available contacts
@@ -96,7 +97,7 @@ export default function ChatDrawer({
 
   async function loadThreads() {
     try {
-      const data = await fetchConversations(currentUser.id);
+      const data = await fetchConversations(currentUserId);
       setConversations(data);
       // If no initial partner set, pick the first thread
       if (!activePartner && data.length > 0 && data[0].otherUser) {
@@ -115,7 +116,9 @@ export default function ChatDrawer({
     try {
       const targetRole = isClient ? 'student' : 'client';
       const usersData = await fetchUsers(targetRole);
-      const filtered = usersData.filter(u => u.id !== currentUser.id && u._id !== currentUser.id);
+     const filtered = usersData.filter(
+  u => (u.id || u._id) !== currentUserId
+);
       setAvailableContacts(filtered);
 
       // If user had no conversations and no active partner, default to the first available contact
@@ -130,18 +133,20 @@ export default function ChatDrawer({
   }
 
   async function loadChatMessages() {
-    if (!activePartner) return;
-    try {
-      const msgs = await fetchMessages({
-        userId1: currentUser.id,
-        userId2: activePartner.id,
-        projectId: activeProject?.id
-      });
-      setMessages(msgs);
-    } catch (err) {
-      console.error('Failed to load messages:', err);
-    }
+  if (!activePartner) return;
+
+  try {
+    const msgs = await fetchMessages({
+      userId1: currentUserId,
+      userId2: activePartner.id || activePartner._id,
+      projectId: activeProject?.id || activeProject?._id
+    });
+
+    setMessages(msgs);
+  } catch (err) {
+    console.error('Failed to load messages:', err);
   }
+}
 
   async function handleFileAttachment(e) {
     const file = e.target.files?.[0];
@@ -150,9 +155,9 @@ export default function ChatDrawer({
     try {
       const res = await uploadFile(file);
       await sendMessage({
-        project_id: activeProject?.id || null,
-        sender_id: currentUser.id,
-        receiver_id: activePartner.id,
+       project_id: activeProject?.id || activeProject?._id || null,
+sender_id: currentUserId,
+receiver_id: activePartner.id || activePartner._id,
         message: inputMessage.trim() ? inputMessage.trim() : `📎 Sent file: ${res.file.name}`,
         attachment_url: res.file.url,
         attachment_name: res.file.name
@@ -178,9 +183,9 @@ export default function ChatDrawer({
 
     try {
       await sendMessage({
-        project_id: activeProject?.id || null,
-        sender_id: currentUser.id,
-        receiver_id: activePartner.id,
+       project_id: activeProject?.id || activeProject?._id || null,
+        sender_id: currentUserId,
+receiver_id: activePartner.id || activePartner._id,
         message: textToSend
       });
       await loadChatMessages();

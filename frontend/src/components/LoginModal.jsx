@@ -288,7 +288,7 @@ export default function LoginModal({
 
                   return (
                     <div
-                      key={student.id}
+                      key={student.id || student._id || student.email}
                       onClick={() => handleProfileClick(student)}
                       className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left flex flex-col justify-between group relative ${
                         isCurrent

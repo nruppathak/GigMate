@@ -1,0 +1,30 @@
+{
+  "name": "student-freelance-platform",
+  "version": "1.0.0",
+  "description": "Student-first freelancing and gig platform with skill matching, portfolio showcase, and application tracking",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node backend/index.js",
+    "dev:backend": "node --watch backend/index.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.1",
+    "mongoose": "^9.10.1"
+  },
+  "keywords": [
+    "freelance",
+    "students",
+    "college",
+    "gigs",
+    "skill-matching",
+    "react",
+    "express",
+    "mongodb"
+  ],
+  "author": "Deepmind Antigravity",
+  "license": "MIT"
+}

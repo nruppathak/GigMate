@@ -105,7 +105,7 @@ export async function updateProjectStatus(id, status) {
 }
 
 export async function fetchRecommendedProjects(studentId) {
-  const res = await fetch(`${API_BASE}/recommendations/projects/${studentId}`);
+  const res = await fetch(`${API_BASE}/projects/recommended/${studentId}`);
   if (!res.ok) throw new Error('Failed to fetch recommended projects');
   return res.json();
 }
